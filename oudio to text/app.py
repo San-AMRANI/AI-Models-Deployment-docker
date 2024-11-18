@@ -28,16 +28,18 @@ def query_audio(filename):
         return {"error": "Request failed", "message": str(e)}
 
 # Route for home page with audio upload
-@app.route("/", methods=["GET", "POST"])
+@app.route("/oudio-to-text", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
         # Check if a file is uploaded
         if 'audio' not in request.files:
-            return render_template("index.html", error="No file uploaded")
+            return jsonify({'error': 'No file uploaded'})
+            # return render_template("index.html", error="No file uploaded")
 
         audio_file = request.files['audio']
         if audio_file.filename == '':
-            return render_template("index.html", error="No file selected")
+            return jsonify({'error': 'No file selected'})
+            # return render_template("index.html", error="No file selected")
 
         # Save the file
         file_path = os.path.join(UPLOAD_FOLDER, audio_file.filename)
@@ -51,12 +53,18 @@ def home():
 
         # Handle response
         if "error" in result:
-            return render_template("index.html", error=result.get("message", "Unknown error"))
+            return jsonify({
+                'error': result.get("message", "Unknown error")
+            })
+            # return render_template("index.html", error=result.get("message", "Unknown error"))
 
         transcription = result.get("text", "No transcription available")
-        return render_template("index.html", transcription=transcription)
+        return jsonify({
+            'transciption': transcription
+        })
+        # return render_template("index.html", transcription=transcription)
 
-    return render_template("index.html")
+    # return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
