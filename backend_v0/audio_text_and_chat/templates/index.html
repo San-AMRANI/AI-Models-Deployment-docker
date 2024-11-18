@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio to Text, Chat, and Image Generator</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        /* Custom Styling for the Output Section */
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e9ecef;
+            width: 60%;
+            text-align: center;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column justify-content-center align-items-center" style="height: 100vh; background-color: #f5f5f5;">
+
+    <div class="container-xl">
+        <div class="row">
+            <!-- Collapse section to switch between functionalities -->
+            <div class="col-12">
+                <h1 class="mb-4 text-center">Audio to Text, Chat & Image Generation</h1>
+
+                <!-- Collapse menu for each functionality -->
+                <div class="accordion" id="mainAccordion">
+                    <!-- Audio Transcription Section -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="audioHeading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#audioCollapse" aria-expanded="true" aria-controls="audioCollapse">
+                                Audio to Text Transcription
+                            </button>
+                        </h2>
+                        <div id="audioCollapse" class="accordion-collapse collapse show" aria-labelledby="audioHeading" data-bs-parent="#mainAccordion">
+                            <div class="accordion-body">
+                                <form id="uploadForm" class="bg-white p-4 rounded shadow-sm">
+                                    <div class="mb-3">
+                                        <input type="file" id="audioFile" accept="audio/*" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Upload and Transcribe</button>
+                                </form>
+                                <div id="output" class="output mt-4" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Section -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="chatHeading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#chatCollapse" aria-expanded="false" aria-controls="chatCollapse">
+                                Chat with Rose
+                            </button>
+                        </h2>
+                        <div id="chatCollapse" class="accordion-collapse collapse" aria-labelledby="chatHeading" data-bs-parent="#mainAccordion">
+                            <div class="accordion-body">
+                                <form id="chatForm" class="bg-white p-4 rounded shadow-sm">
+                                    <div class="mb-3">
+                                        <input type="text" id="chatInput" name="chatInput" class="form-control" placeholder="Ask something..." required>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary w-100">Send</button>
+                                </form>
+                                <div id="chatOutput" class="output mt-4 w-100" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Generation Section -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="imageHeading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#imageCollapse" aria-expanded="false" aria-controls="imageCollapse">
+                                Image Generation
+                            </button>
+                        </h2>
+                        <div id="imageCollapse" class="accordion-collapse collapse" aria-labelledby="imageHeading" data-bs-parent="#mainAccordion">
+                            <div class="accordion-body">
+                                <input type="text" id="prompt" placeholder="Enter your prompt">
+                                <button onclick="generateImage()">Generate</button>
+
+                                <p id="error" style="color: red; display: none;"></p>
+                                <div id="generated-image" style="display: none;">
+                                    <h2>Generated Image:</h2>
+                                    <img id="image" src="" alt="Generated Image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and Popper.js -->
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.mln.js') }}"></script>
+
+    <script>
+        // Audio transcription functionality
+        const uploadForm = document.getElementById("uploadForm");
+        const output = document.getElementById("output");
+
+        uploadForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            output.style.display = "none";
+            output.textContent = ""; // Clear previous output
+
+            const audioFile = document.getElementById("audioFile").files[0];
+            if (!audioFile) {
+                alert("Please select an audio file to upload!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("audio", audioFile);
+
+            try {
+                const response = await fetch("/audio-to-text", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                output.style.display = "block";
+                if (response.ok) {
+                    output.textContent = result.transcription || "No transcription available.";
+                    output.classList.remove("error");
+                } else {
+                    output.textContent = result.error || "An unknown error occurred.";
+                    output.classList.add("error");
+                }
+            } catch (error) {
+                output.style.display = "block";
+                output.textContent = "Failed to connect to the server.";
+                output.classList.add("error");
+            }
+        });
+
+        // Chat functionality
+        const chatForm = document.getElementById("chatForm");
+        const chatOutput = document.getElementById("chatOutput");
+
+        chatForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            chatOutput.style.display = "none";
+            chatOutput.textContent = ""; // Clear previous output
+
+            const query = document.getElementById("chatInput").value.trim();
+            if (!query) {
+                alert("Please enter a question!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("chatInput", query);
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                chatOutput.style.display = "block";
+                if (response.ok) {
+                    chatOutput.textContent = result.response || "No response available.";
+                    chatOutput.classList.remove("error");
+                } else {
+                    chatOutput.textContent = result.error || "An unknown error occurred.";
+                    chatOutput.classList.add("error");
+                }
+            } catch (error) {
+                chatOutput.style.display = "block";
+                chatOutput.textContent = "Failed to connect to the server.";
+                chatOutput.classList.add("error");
+            }
+        });
+        
+        
+        function generateImage() {
+            const prompt = document.getElementById('prompt').value;
+            const errorElement = document.getElementById('error');
+            const imageElement = document.getElementById('generated-image');
+            const imgElement = document.getElementById('image');
+
+            // Hide previous error or image
+            errorElement.style.display = 'none';
+            imageElement.style.display = 'none';
+
+            // Send request to backend
+            fetch("/image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorElement.textContent = data.error;
+                    errorElement.style.display = 'block';
+                } else if (data.image_path) {
+                    imgElement.src = data.image_path;
+                    imageElement.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorElement.textContent = 'An error occurred. Please try again later.';
+                errorElement.style.display = 'block';
+            });
+        }
+    </script>
+
+</body>
+</html>

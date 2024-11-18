@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Hugging Face API Integration</title>
+</head>
+<body>
+    <h1>Generate Text using Qwen/Qwen2.5-Coder-32B-Instruct</h1>
+    <form method="POST">
+        <label for="prompt">Enter your prompt:</label>
+        <textarea name="prompt" id="prompt" rows="4" cols="50">{{ prompt }}</textarea>
+        <br>
+        <button type="submit">Generate</button>
+    </form>
+
+    {% if result %}
+        <h2>Generated Text:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>

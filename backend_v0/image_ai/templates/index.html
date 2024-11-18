@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+</head>
+<body>
+    <h1>Generate an Image</h1>
+    <input type="text" id="prompt" placeholder="Enter your prompt">
+    <button onclick="generateImage()">Generate</button>
+
+    <p id="error" style="color: red; display: none;"></p>
+    <div id="generated-image" style="display: none;">
+        <h2>Generated Image:</h2>
+        <img id="image" src="" alt="Generated Image">
+    </div>
+
+    <script>
+        function generateImage() {
+            const prompt = document.getElementById('prompt').value;
+            const errorElement = document.getElementById('error');
+            const imageElement = document.getElementById('generated-image');
+            const imgElement = document.getElementById('image');
+
+            // Hide previous error or image
+            errorElement.style.display = 'none';
+            imageElement.style.display = 'none';
+
+            // Send request to backend
+            fetch("/image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorElement.textContent = data.error;
+                    errorElement.style.display = 'block';
+                } else if (data.image_path) {
+                    imgElement.src = data.image_path;
+                    imageElement.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorElement.textContent = 'An error occurred. Please try again later.';
+                errorElement.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>
