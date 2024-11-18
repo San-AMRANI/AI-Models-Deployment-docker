@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta chatset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page-container">
+      <!--this part is for the navbar-->
+      <nav class="page-navbar">
+        <img class="page-navbar__logo" src="./dist/logo.png" />
+        <ul class="page-navbar__list">
+          <li class="page-navbar__list-item">
+            <a href="index.html" class="page-navbar__list-link" active
+              >Model 1</a
+            >
+          </li>
+          <li class="page-navbar__list-item">
+            <a href="model2.html" class="page-navbar__list-link">Model 2</a>
+          </li>
+          <li class="page-navbar__list-item">
+            <a href="" class="page-navbar__list-link">Model 3</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!--this part is for the header-->
+      <div class="header-container">
+        <h1 class="header-header" id="header-header">
+          chat with <span>ROSEAI</span>
+        </h1>
+        <p class="header-text">Rose always complete his task, Just ask.</p>
+      </div>
+
+      <!--this part is for the char-->
+      <div class="chat-container">
+        <div class="chat__block">
+          <div class="chat__block-navbar">
+            <h2 class="chat_block-navbar-header">ROSEAI</h2>
+            <button class="chat_block-navbar-clearChat" id="clear_chat">
+              Clear Chat
+            </button>
+          </div>
+          <div class="chat__block-main">
+            <!-- <div class="chat__block-main-message">
+              <div class="message">Hello I'am aymane from something</div>
+            </div> -->
+          </div>
+          <div class="chat__block-footer">
+            <button id="start-btn">Start Recording</button>
+            <button id="stop-btn" disabled>Stop Recording</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="./src/animations/typingAnimation.js"></script>
+    <script src="./src/js/audioRecorder.js"></script>
+  </body>
+</html>
