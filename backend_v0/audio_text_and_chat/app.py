@@ -27,6 +27,7 @@ os.makedirs(IMAGE_FOLDER, exist_ok=True)
 # Environment variable for the API token
 API_TOKEN = os.getenv("API_TOKEN", "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")
 API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
+API_URL_IMG = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
 @app.route("/")
@@ -132,7 +133,7 @@ def query_model(prompt):
     }
 
     try:
-        response = requests.post(API_URL, headers=headers, json=payload)
+        response = requests.post(API_URL_IMG, headers=headers, json=payload)
         print(f"Response Status Code: {response.status_code}")
         print(f"Response Headers: {response.headers}")
 
