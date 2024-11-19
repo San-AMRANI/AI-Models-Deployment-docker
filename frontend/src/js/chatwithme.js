@@ -1,40 +1,8 @@
 function formatResponse(responseText) {
-  // Split the response into two parts: introduction and list of cities
-  const [introduction, citiesPart] = responseText.split(":")[0]
-    ? [responseText.split(":")[0], responseText.split(":").slice(1).join(":")]
-    : [responseText, ""];
-
-  // Clean the introduction part
-  const formattedIntroduction = introduction.trim().replace(/\n/g, "<br/>"); // Replace newlines with <br> tags for HTML rendering
-
-  // Make words between **bold**
-  const formattedBoldText = formattedIntroduction.replace(
-    /\*\*(.*?)\*\*/g,
-    "<strong>$1</strong>"
-  );
-
-  // Format the list of cities
-  const cityList = citiesPart
-    .trim()
-    .split("\n")
-    .map((line, index) => {
-      // Check for city data (city name and visitor count)
-      const match = line.match(
-        /^(\d+)\.\s*(.*?)\s*[:\s]+([0-9.,]+)\s*visitors/
-      );
-      if (match) {
-        return `<li><strong>${match[1]}. ${match[2]}:</strong> ${match[3]} visitors</li>`;
-      }
-      return null;
-    })
-    .filter(Boolean)
-    .join("");
-
-  // Combine the formatted introduction and city list
-  return `
-      <p>${formattedBoldText}</p>
-      <ul>${cityList}</ul>
-    `;
+  const text = responseText
+    .replace(/\\(.+?)\\/g, "<strong>$1</strong>") // Convert *text* to <strong>text</strong>
+    .replace(/(\d+\.\s)/g, "<br>$1"); // Add line breaks before numbered points
+  return text;
 }
 
 //////////////////////////////////////////////////////////////////////////
