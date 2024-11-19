@@ -18,8 +18,8 @@ clearChatButton.addEventListener("click", () => {
   chatBlockMain.innerHTML = "";
 });
 
-// Event listener for submitting the chat input
-chatSubmit.addEventListener("click", async () => {
+// Function to handle chat submission
+const handleChatSubmit = async () => {
   const userMessage = chatInput.value.trim();
 
   if (userMessage === "") {
@@ -105,5 +105,15 @@ chatSubmit.addEventListener("click", async () => {
   } catch (error) {
     console.error("Error:", error);
     alert("An error occurred while processing your request.");
+  }
+};
+
+// Event listener for clicking the submit button
+chatSubmit.addEventListener("click", handleChatSubmit);
+
+// Event listener for pressing Enter in the input field
+chatInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    handleChatSubmit();
   }
 });

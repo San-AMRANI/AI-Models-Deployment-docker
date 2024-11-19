@@ -6,6 +6,9 @@ from openai import OpenAI
 from io import BytesIO
 from PIL import Image
 import base64
+from datetime import datetime
+import uuid  # Optional: For generating unique IDs
+
 
 # Configuration for image upload and generation
 UPLOAD_FOLDER = 'static/uploads'
@@ -77,7 +80,6 @@ def save_image(image_data, image_name):
         print(f"Failed to save image: {e}")
         return None
 
-# Route for generating images
 @app.route("/image", methods=["POST"])
 def generate_image():
     data = request.get_json()
@@ -91,15 +93,19 @@ def generate_image():
     if "error" in result:
         return jsonify({"error": result.get("message", "Unknown error")}), 400
 
-    # Handle different response types
+    # Generate a dynamic name for the image
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")  # Format: YYYYMMDDHHMMSS
+    unique_id = uuid.uuid4().hex[:8]  # Optional: Short unique ID (first 8 characters)
+    base_name = "generated_image"
+
     if "binary_image" in result:
-        image_name = "generated_image.png"
+        image_name = f"{base_name}_{timestamp}_{unique_id}.png"
         image_path = save_image(result["binary_image"], image_name)
     elif "image" in result:
-        image_name = "generated_image_base64.png"
+        image_name = f"{base_name}_{timestamp}_{unique_id}_base64.png"
         image_path = save_image(result["image"], image_name)
     elif "image_url" in result:
-        image_name = "generated_image_from_url.png"
+        image_name = f"{base_name}_{timestamp}_{unique_id}_from_url.png"
         image_path = save_image(result["image_url"], image_name)
     else:
         return jsonify({"error": "No image data received"}), 400
