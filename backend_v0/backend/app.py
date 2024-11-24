@@ -26,7 +26,7 @@ os.makedirs(IMAGE_FOLDER, exist_ok=True)
 
 # Environment variable for the API token
 API_TOKEN = os.getenv("API_TOKEN", "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")
-API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
+API_URL_AUD = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
 API_URL_IMG = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
@@ -108,7 +108,7 @@ def query_audio(filename):
     try:
         with open(filename, "rb") as f:
             data = f.read()
-        response = requests.post(API_URL, headers=headers, data=data)
+        response = requests.post(API_URL_AUD, headers=headers, data=data)
 
         if response.status_code == 200:
             return response.json()

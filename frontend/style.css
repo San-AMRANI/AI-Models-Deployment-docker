@@ -264,3 +264,11 @@ body {
     transform: translate(24px, 0);
   }
 }
+
+.bold_words{
+  font-weight: bold;
+  display: inline !important;
+}
+.response{
+  display: block !important;
+}

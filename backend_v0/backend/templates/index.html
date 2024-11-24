@@ -7,85 +7,119 @@
     <!-- Include Bootstrap CSS -->
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
     <style>
-        /* Custom Styling for the Output Section */
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #f3f4f6, #e9ecef);
+            font-family: 'Poppins', sans-serif;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .accordion-button {
+            font-size: 1.2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+        .btn-primary, .btn-secondary {
+            border-radius: 30px;
+            font-weight: 600;
+        }
         .output {
-            margin-top: 20px;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
-            background: #e9ecef;
-            width: 60%;
-            text-align: center;
+            background: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             word-wrap: break-word;
+        }
+        .form-control {
+            border-radius: 8px;
+        }
+        .generated-image img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
-<body class="d-flex flex-column justify-content-center align-items-center" style="height: 100vh; background-color: #f5f5f5;">
+<body class="d-flex justify-content-center align-items-center">
 
     <div class="container-xl">
-        <div class="row">
-            <!-- Collapse section to switch between functionalities -->
-            <div class="col-12">
-                <h1 class="mb-4 text-center">Audio to Text, Chat & Image Generation</h1>
+        <div class="text-center mb-4">
+            <h1>AI Toolkit</h1>
+            <p class="text-muted">Convert audio to text, chat with AI, and generate images effortlessly.</p>
+        </div>
 
-                <!-- Collapse menu for each functionality -->
-                <div class="accordion" id="mainAccordion">
-                    <!-- Audio Transcription Section -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="audioHeading">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#audioCollapse" aria-expanded="true" aria-controls="audioCollapse">
-                                Audio to Text Transcription
-                            </button>
-                        </h2>
-                        <div id="audioCollapse" class="accordion-collapse collapse show" aria-labelledby="audioHeading" data-bs-parent="#mainAccordion">
-                            <div class="accordion-body">
-                                <form id="uploadForm" class="bg-white p-4 rounded shadow-sm">
-                                    <div class="mb-3">
-                                        <input type="file" id="audioFile" accept="audio/*" class="form-control" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100">Upload and Transcribe</button>
-                                </form>
-                                <div id="output" class="output mt-4" style="display: none;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Section -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="chatHeading">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#chatCollapse" aria-expanded="false" aria-controls="chatCollapse">
-                                Chat with Rose
-                            </button>
-                        </h2>
-                        <div id="chatCollapse" class="accordion-collapse collapse" aria-labelledby="chatHeading" data-bs-parent="#mainAccordion">
-                            <div class="accordion-body">
-                                <form id="chatForm" class="bg-white p-4 rounded shadow-sm">
-                                    <div class="mb-3">
-                                        <input type="text" id="chatInput" name="chatInput" class="form-control" placeholder="Ask something..." required>
-                                    </div>
-                                    <button type="submit" class="btn btn-secondary w-100">Send</button>
-                                </form>
-                                <p id="chatOutput" class="output mt-4 w-100" style="display: none;"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Image Generation Section -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="imageHeading">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#imageCollapse" aria-expanded="false" aria-controls="imageCollapse">
-                                Image Generation
-                            </button>
-                        </h2>
-                        <div id="imageCollapse" class="accordion-collapse collapse" aria-labelledby="imageHeading" data-bs-parent="#mainAccordion">
-                            <div class="accordion-body">
-                                <input type="text" id="prompt" placeholder="Enter your prompt">
-                                <button onclick="generateImage()">Generate</button>
-
-                                <p id="error" style="color: red; display: none;"></p>
-                                <div id="generated-image" style="display: none;">
-                                    <h2>Generated Image:</h2>
-                                    <img id="image" src="" alt="Generated Image">
+        <div class="accordion" id="mainAccordion">
+            <!-- Audio Transcription Section -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="audioHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#audioCollapse" aria-expanded="true" aria-controls="audioCollapse">
+                        Audio to Text Transcription
+                    </button>
+                </h2>
+                <div id="audioCollapse" class="accordion-collapse collapse show" aria-labelledby="audioHeading" data-bs-parent="#mainAccordion">
+                    <div class="accordion-body">
+                        <div class="card p-4">
+                            <form id="uploadForm">
+                                <div class="mb-3">
+                                    <label for="audioFile" class="form-label">Upload Audio File</label>
+                                    <input type="file" id="audioFile" accept="audio/*" class="form-control" required>
                                 </div>
+                                <button type="submit" class="btn btn-primary w-100">Transcribe</button>
+                            </form>
+                            <div id="output" class="output mt-4" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="chatHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#chatCollapse" aria-expanded="false" aria-controls="chatCollapse">
+                        Chat with Rose
+                    </button>
+                </h2>
+                <div id="chatCollapse" class="accordion-collapse collapse" aria-labelledby="chatHeading" data-bs-parent="#mainAccordion">
+                    <div class="accordion-body">
+                        <div class="card p-4">
+                            <form id="chatForm">
+                                <div class="mb-3">
+                                    <label for="chatInput" class="form-label">Enter Your Query</label>
+                                    <input type="text" id="chatInput" class="form-control" placeholder="Ask Rose anything..." required>
+                                </div>
+                                <button type="submit" class="btn btn-secondary w-100">Send</button>
+                            </form>
+                            <p id="chatOutput" class="output mt-4" style="display: none;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Generation Section -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="imageHeading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#imageCollapse" aria-expanded="false" aria-controls="imageCollapse">
+                        Image Generation
+                    </button>
+                </h2>
+                <div id="imageCollapse" class="accordion-collapse collapse" aria-labelledby="imageHeading" data-bs-parent="#mainAccordion">
+                    <div class="accordion-body">
+                        <div class="card p-4">
+                            <div class="mb-3">
+                                <label for="prompt" class="form-label">Enter Image Description</label>
+                                <input type="text" id="prompt" class="form-control" placeholder="E.g., A serene landscape with mountains and a lake">
+                            </div>
+                            <button onclick="generateImage()" class="btn btn-success w-100">Generate Image</button>
+                            <p id="error" class="text-danger mt-3" style="display: none;"></p>
+                            <div id="generated-image" class="generated-image mt-4" style="display: none;">
+                                <h5>Generated Image:</h5>
+                                <img id="image" src="" alt="Generated Image">
                             </div>
                         </div>
                     </div>

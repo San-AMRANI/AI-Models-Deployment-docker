@@ -1,6 +1,6 @@
 function formatResponse(responseText) {
   const text = responseText
-    .replace(/\\(.+?)\\/g, "<strong>$1</strong>") // Convert *text* to <strong>text</strong>
+    .replace(/\*\*(.+?)\*\*/g, "<span class='bold_words'>$1</span>") // Convert **text** to <span> with bold class
     .replace(/(\d+\.\s)/g, "<br>$1"); // Add line breaks before numbered points
   return text;
 }

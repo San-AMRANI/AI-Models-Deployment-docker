@@ -1,8 +1,17 @@
-# Step 1: Use the official Nginx image as the base
+# Stage 1: Build the app using Node.js
+FROM node:18-alpine AS build
+
+# Set the working directory in the container
+WORKDIR /app
+
+
+RUN npm run build
+
+# Stage 2: Serve the app using Nginx
 FROM nginx:alpine
 
-# Step 2: Copy the app content to the Nginx default directory
-COPY . /usr/share/nginx/html
+# Copy the built app from the first stage into the Nginx HTML directory
+COPY  . /usr/share/nginx/html
 
 # Expose the default Nginx port
 EXPOSE 80
